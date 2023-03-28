@@ -6,13 +6,13 @@ from pathlib import Path
 def read_csv_LJspeech(path_to_csv: str) -> Dict[str,List[Any]] :
     """ 
     input:path to csv file of JLspeech metadata
-    output: a dict of list of indexes , filename of the audio, transcripts and phonemes
+    output: a dict of list of indexes , filename of the audio, transcripts and normalised transcripts
     """
     path_to_csv = Path(path_to_csv)
     file = pd.read_csv(path_to_csv,sep="|")
     arr = file.to_numpy()
     indexes = file.index.to_numpy()
-    data = {"indxs":list(indexes),"files":list(arr[:,0]),"transcripts":list(arr[:,1]),"phonemes":list(arr[:,1])}
+    data = {"indxs":list(indexes),"files":list(arr[:,0]),"transcripts":list(arr[:,1]),"norm_transcripts":list(arr[:,1])}
     return data
 
 def check_LJ_data():

@@ -3,8 +3,8 @@ import streamlit as st
 
 
 def run_LJpage():
-    def change_phonemes():
-        st.session_state["editedPhoneme"] = st.session_state["editedtranscript"]
+    def change_norm_transcripts():
+        st.session_state["editednormtranscripts"] = st.session_state["editedtranscript"]
     if "a_counter" not in st.session_state:
         st.session_state["a_counter"]=0
     if "enable_edit" not in st.session_state:
@@ -40,15 +40,15 @@ def run_LJpage():
             st.session_state["enable_edit"]= not  st.session_state["enable_edit"]
         if st.session_state["enable_edit"]:
             new_transcript = st.text_area("enter new transcript:",metaData["transcripts"][st.session_state["a_counter"]],key="editedtranscript",
-                                          on_change=change_phonemes)
-            #call function to edit it in csv when apply button is pressed
+                                          on_change=change_norm_transcripts)
+            #call function to edit it in csv when apply button is pressed and reload data
 
 
-        st.text("phoneme:")
-        st.write(metaData["phonemes"][st.session_state["a_counter"]])
+        st.text("normalised transcripts:")
+        st.write(metaData["norm_transcripts"][st.session_state["a_counter"]])
         if st.session_state["enable_edit"]:
-            new_phoneme = st.text_area("new phoneme is same as transcription by default:",metaData["phonemes"][st.session_state["a_counter"]],key="editedPhoneme")
-            #call function to save new phoneme when apply is clicked
+            norm_transcript = st.text_area("new normalised transcript is same as transcription by default:",metaData["norm_transcripts"][st.session_state["a_counter"]],key="editednormtranscripts")
+            #call function to save new norm_transcripts when apply is clicked and reload data
 
         st.text("file:")
         st.write(metaData["files"][st.session_state["a_counter"]])
