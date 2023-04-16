@@ -1,4 +1,5 @@
 from utils.LJdataReader import read_csv_LJspeech,read_audios
+from utils.utils import edit_csv
 import streamlit as st
 
 
@@ -41,17 +42,24 @@ def run_LJpage():
         if st.session_state["enable_edit"]:
             new_transcript = st.text_area("enter new transcript:",metaData["transcripts"][st.session_state["a_counter"]],key="editedtranscript",
                                           on_change=change_norm_transcripts)
-            #call function to edit it in csv when apply button is pressed and reload data
-
+           
 
         st.text("normalised transcripts:")
         st.write(metaData["norm_transcripts"][st.session_state["a_counter"]])
         if st.session_state["enable_edit"]:
             norm_transcript = st.text_area("new normalised transcript is same as transcription by default:",metaData["norm_transcripts"][st.session_state["a_counter"]],key="editednormtranscripts")
             #call function to save new norm_transcripts when apply is clicked and reload data
+        if st.session_state["enable_edit"]:
+            save = st.button("save")
+            if save:
+                #call function to edit it in csv when apply button is pressed and reload data and add to save
+                edit_csv(path_to_csv,st.session_state["a_counter"],1,new_transcript)
+                edit_csv(path_to_csv,st.session_state["a_counter"],2,norm_transcript)
+                metaData = read_csv_LJspeech(path_to_csv)
+
 
         st.text("file:")
         st.write(metaData["files"][st.session_state["a_counter"]])
-        st.text("current counter:" + str(st.session_state["a_counter"]))
+        st.text("current counter:" + str(st.session_state["a_counter"]+1) + '/' + str(len(metaData["files"])))
 
 run_LJpage()

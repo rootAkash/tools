@@ -2,6 +2,7 @@ import streamlit as st
 import os
 from typing import Optional,List,Any
 from pathlib import Path
+import pandas as pd
 
 def file_uploader() -> Optional[str]:
     """
@@ -54,3 +55,13 @@ def clickable_grid(items:List[Any]) -> str:
         item_index = st.selectbox("Select an item", options=[i["name"] if isinstance(i, dict) else i for i in items])
         selected_item.text(f"You selected: {item_index}")
         return item_index
+    
+def edit_csv(filepath:str,row:int,col:int ,data:str) -> None :
+    # reading the csv file
+    df = pd.read_csv(filepath,sep="|")
+    
+    # updating the column value/data
+    df.iat[row,col] = data
+    
+    # writing into the file
+    df.to_csv(filepath,sep="|", index=False)
