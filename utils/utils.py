@@ -2,6 +2,7 @@ import streamlit as st
 import os
 from typing import Optional,List,Any
 from pathlib import Path
+import json
 import pandas as pd
 
 def file_uploader() -> Optional[str]:
@@ -59,9 +60,54 @@ def clickable_grid(items:List[Any]) -> str:
 def edit_csv(filepath:str,row:int,col:int ,data:str) -> None :
     # reading the csv file
     df = pd.read_csv(filepath,sep="|")
-    
     # updating the column value/data
     df.iat[row,col] = data
-    
     # writing into the file
     df.to_csv(filepath,sep="|", index=False)
+
+def create_intial_save(session_id : str , key: str )-> None:
+    """ creates intital save file for a new session"""
+    save_path = "./saves/"
+    json_object = {}
+    json_object[key] = []
+    json_path = save_path+session_id + ".json"
+    with open(json_path, "w") as outfile:
+        json.dump(json_object, outfile)
+        
+def write_to_json_save(session_id : str , key: str , value :str , continued: bool =True ) -> None:
+    """ takes a key value pair as input along with sessionid
+        if json file with sessionid name exists and continued is true then append input value to 
+          existing value list in json file
+        if continued is false then create fresh json
+    """
+    save_path = "./saves/"
+    saves = os.listdir(save_path)
+    session_id = session_id + ".json"
+    json_path = save_path+session_id
+    if session_id not in saves:
+        raise ValueError("cant find save file for the session id")
+    if session_id in saves and continued :
+        with open(json_path, 'r') as openfile:
+            json_object = json.load(openfile)
+        json_object[key].append(value)
+        with open(json_path, "w") as outfile:
+            json.dump(json_object, outfile)
+    else:
+        json_object = {}
+        json_object[key] = [value]
+        with open(json_path, "w") as outfile:
+            json.dump(json_object, outfile)
+
+def read_save(session_id : str , key: str )-> List[str]:
+    save_path = "./saves/"
+    saves = os.listdir(save_path)
+    session_id = session_id + ".json"
+    json_path = save_path+session_id
+    if session_id not in saves:
+        raise ValueError("cant find save file for the session id")
+    if session_id in saves  :
+        with open(json_path, 'r') as openfile:
+            json_object = json.load(openfile)
+    return json_object[key]
+
+
